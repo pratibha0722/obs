@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OBS Connector</title>
+</head>
+<body>
+
+<h2>Connect to OBS</h2>
+
+<input id="ip" placeholder="OBS IP"><br><br>
+<input id="port" placeholder="Port (4455)"><br><br>
+<input id="password" placeholder="Password"><br><br>
+
+<button onclick="connect()">Connect</button>
+
+<h3 id="status"></h3>
+
+<script>
+function connect() {
+  fetch("/overlay/connect", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      obsHost: document.getElementById("ip").value,
+      obsPort: parseInt(document.getElementById("port").value),
+      obsPassword: document.getElementById("password").value
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("status").innerText =
+      data.success ? "✅ OBS Connected & Running" : "❌ Failed";
+  });
+}
+</script>
+
+</body>
+</html>

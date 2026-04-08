@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OBS Connection</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        input { display: block; margin: 10px 0; padding: 8px; width: 300px; }
+        button { padding: 10px 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h2>Connect to OBS</h2>
+
+    <input id="host" placeholder="OBS IP (e.g. 192.168.1.7)" />
+    <input id="port" placeholder="Port (default 4455)" />
+    <input id="password" type="password" placeholder="OBS Password" />
+
+    <button onclick="connectOBS()">Connect</button>
+
+    <p id="status"></p>
+
+    <script>
+        async function connectOBS() {
+            const host = document.getElementById("host").value;
+            const port = document.getElementById("port").value || 4455;
+            const password = document.getElementById("password").value;
+
+            const status = document.getElementById("status");
+            status.innerText = "Connecting...";
+
+            try {
+                const res = await fetch("http://localhost:8000/overlay/connect", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ host, port, password })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    status.innerText = "✅ Connected to OBS!";
+                } else {
+                    status.innerText = "❌ Failed to connect";
+                }
+
+            } catch (err) {
+                status.innerText = "❌ Error: " + err.message;
+            }
+        }
+    </script>
+
+</body>
+</html>
